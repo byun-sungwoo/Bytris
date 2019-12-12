@@ -1,0 +1,1 @@
+clear;rm a.out;gcc cursemain.c -l ncurses;./a.out

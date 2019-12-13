@@ -39,6 +39,7 @@
 // TODO:
 // Game menu		: Maybe
 // Spring Leaderboard	: Need to read/write txt file
+// Stats Update		: Add more stats to stats window
 // Gamemode		: Marathon & Battle
 // Input		: Add DAS/ARR
 

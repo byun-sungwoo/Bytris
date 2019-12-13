@@ -174,7 +174,8 @@ void sprint(int goal) {
 					mvprintw(7,0,"%f > %f",seconds(timer-inputoffset),TICKRATE);
 				}
 				lockdelaycounter += atfloor ? 1 : -lockdelaycounter;
-				if(atfloor && seconds(timer-inputoffset)>TICKRATE) {
+				if(	(atfloor && seconds(timer-inputoffset)>TICKRATE) ||
+					(atfloor && lockdelaycounter >= lockdelaycap)) {
 					harddroplive();
 					canhold = 1;
 					tickcounter = 0;

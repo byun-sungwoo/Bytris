@@ -11,7 +11,7 @@
 #include "board.c"
 
 // game settings
-#define DEBUG		0	// 0 for non debug mode
+#define DEBUG		1	// 0 for non debug mode
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.8	// downtick rate (seconds)
 
@@ -33,8 +33,8 @@ double seconds(clock_t);
 
 // main
 int main(void) {
-	// init ncurses
-	initscr();	// create stdscr
+	// init ncurses and create stdscr
+	initscr();
 	noecho();
 	// capture dimensions
 	getmaxyx(stdscr, dimr, dimc);
@@ -80,14 +80,14 @@ void sprint(int goal) {
 				(dimc/2)-(WIDTH+2));
 	// tetris variables
 	int seed,i,j,k;
-	char input;
-	clock_t timer,resetoffset,liveoffset,inputoffset;
-	resetoffset = 0;
 	int lockdelaycap = 5;
 	int lockdelaycounter;
 	int tickcounter;
 	int oldboard[HEIGHT][WIDTH];
 	int canhold;
+	char input;
+	clock_t timer,resetoffset,liveoffset,inputoffset;
+	resetoffset = 0;
 	// start up game
 	NEWGAME:
 	liveoffset = 0;
@@ -216,7 +216,7 @@ void sprint(int goal) {
 		// update stat visual
 		mvwprintw(stats,1,2,"%.3fs",seconds(timer));
 		mvwprintw(stats,2,2,"%d/%d",linescleared,goal);
-		// debug switch
+		// debug visual
 		if(DEBUG) {
 			// update data well visual
 			for(i=1;i<HEIGHT;i++)
@@ -226,7 +226,7 @@ void sprint(int goal) {
 			mvprintw(2,0,"holdcolor:%d",hold.color);
 			mvprintw(3,0,"livecolor:%d",live.color);
 		}
-		// reload sections
+		// reload windows
 		wrefresh(well);
 		wrefresh(stats);
 		wrefresh(whold);
@@ -284,7 +284,13 @@ void wdrawblock(WINDOW *win, int row, int col) {
 	}
 }
 
+// display a countdown in the given window
 void wcountdown(WINDOW *win, int countdown) {
+}
+
+// write the given amount of seconds
+// in hr/min/s form in the window
+void wtime(WINDOW *win, int y, int x, double sec) {
 }
 
 // given a clock_t, convert it to a double

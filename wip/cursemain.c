@@ -9,8 +9,13 @@
 #include <time.h>
 #include <string.h>
 #include "board.c"
-#define AUTODROP 20
-#define TICKRATE 0.8
+
+// game settings
+#define DEBUG		0	// 0 for non debug mode
+#define AUTODROP	20	// autodrop cap (seconds)
+#define TICKRATE	0.8	// downtick rate (seconds)
+
+// keyboard settings
 #define HARDDROP	32	// spacebar
 #define ROTATERIGHT	65	// arrow up
 #define SOFTDROP	66	// arrow down
@@ -25,16 +30,16 @@
 // Rotation System	: SRS
 // Block Generation	: Unique rotation, 7 bag following Tetris 99
 // Board Dimension	: 21 rows 10 col, game displays bottom 20
-// Ghost Block		: Done
+// Ghost Block		: Added
 // Lock Delay		: Fixed time from spawn
-// Next Pieces		: Done
-// Reset Game		: Done
+// Next Pieces		: Added
+// Reset Game		: Added
+// Hold Block		: Added
 // 
 // TODO:
-// Hold Block		: WIP
+// Game menu		: Maybe
 // Spring Leaderboard	: Need to read/write txt file
 // Gamemode		: Marathon & Battle
-// Game menu		: Maybe
 // Input		: Add DAS/ARR
 
 int dimr,dimc;
@@ -99,12 +104,14 @@ void sprint(int goal) {
 	int lockdelaycounter;
 	int tickcounter;
 	int oldboard[HEIGHT][WIDTH];
+	int canhold;
 	// start up tetris
 	NEWGAME:
 	liveoffset = 0;
 	inputoffset = 0;
 	lockdelaycounter = 0;
 	tickcounter = 0;
+	canhold = 1;
 	clear();
 	wclear(well);
 	wclear(stats);
@@ -119,7 +126,10 @@ void sprint(int goal) {
 	refresh();
 	seed = time(NULL);
 	initgame(seed);
-	mvprintw(0,0,"seed:%d",seed);
+	//holdstatus = 1;
+	//hold = pool[3];
+	if(DEBUG)
+		mvprintw(0,0,"seed:%d",seed);
 	// draw game screen
 	for(i=0;i<HEIGHT;i++)
 		for(j=0;j<WIDTH;j++)
@@ -136,25 +146,29 @@ void sprint(int goal) {
 		if(seconds(timer-liveoffset) > AUTODROP) {
 			// autodrop case
 			harddroplive();
+			canhold = 1;
 			tickcounter = 0;
 			liveoffset = clock()-resetoffset;
-			inputoffset = clock();
+			inputoffset = clock()-resetoffset;
 		} else {
 			// user input
 			input = getch();
 			if(input == SOFTDROP)
 				if(shiftlive(1,0) == 1)
-					inputoffset = clock();
-			if(	input == HARDDROP || input == MOVELEFT || input == MOVERIGHT ||
+					inputoffset = clock()-resetoffset;
+			if(	input == HARDDROP || input  == HOLD ||
+				input == MOVELEFT || input == MOVERIGHT ||
 				input == ROTATELEFT || input == ROTATERIGHT) {
-				inputoffset = clock();
+				inputoffset = clock()-resetoffset;
 				if(input == HARDDROP) {
 					harddroplive();
+					canhold = 1;
 					tickcounter = 0;
 					liveoffset = clock()-resetoffset;
 				}
-				if(input == HOLD) {
+				if(input == HOLD && canhold) {
 					holdlive();
+					canhold = 0;
 					tickcounter = 0;
 					liveoffset = clock()-resetoffset;
 				}
@@ -168,14 +182,19 @@ void sprint(int goal) {
 				goto NEWGAME;
 			}
 			// downtick
-			mvprintw(6,0,"%f > %f", seconds(timer-liveoffset), TICKRATE*(tickcounter+1));
+			if(DEBUG)
+				mvprintw(5,0,"%f > %f", seconds(timer-liveoffset), TICKRATE*(tickcounter+1));
 			if(seconds(timer-liveoffset) > TICKRATE*(tickcounter+1)) {
 				tickcounter++;
 				int atfloor = !shiftlive(1,0);
+				if(DEBUG) {
+					mvprintw(6,0,"floor? %d", atfloor);
+					mvprintw(7,0,"%f > %f",seconds(timer-inputoffset),TICKRATE);
+				}
 				lockdelaycounter += atfloor ? 1 : -lockdelaycounter;
-				if(	(lockdelaycounter >= lockdelaycap) || 
-					(atfloor && seconds(timer-inputoffset)>TICKRATE)) {
+				if(atfloor && seconds(timer-inputoffset)>TICKRATE) {
 					harddroplive();
+					canhold = 1;
 					tickcounter = 0;
 					liveoffset = clock()-resetoffset;
 				}
@@ -185,20 +204,16 @@ void sprint(int goal) {
 		for(i=0;i<HEIGHT;i++)
 			for(j=0;j<WIDTH;j++)
 				wdrawblock(well,i,j);
-		// update data well visual
-		for(i=1;i<HEIGHT;i++)
-			for(j=0;j<WIDTH;j++)
-				mvprintw(i+8,j,"%d",board[i][j]);
 		// update hold visual
 		if(holdstatus == 1) {
-			for(i=0;i<hold.size.row;i++) {
-				for(j=0;j<hold.size.col;j++) {
-					if(hold.data[i][j] == 1) {
+			for(i=0;i<MAX-1;i++) {
+				for(j=0;j<MAX;j++) {
+					if(hold.data[i][j] == 1 && i < hold.size.row && j < hold.size.col) {
 						wattron(whold,COLOR_PAIR(hold.color));
-						mvwprintw(whold,i+1,1+j*2,"  ");
+						mvwprintw(whold,i+2,3+j*2,"  ");
 						wattroff(whold,COLOR_PAIR(hold.color));
 					} else
-						mvwprintw(whold,i+1,1+j*2,"  ");
+						mvwprintw(whold,i+2,3+j*2,"  ");
 				}
 			}
 		}
@@ -219,6 +234,16 @@ void sprint(int goal) {
 		// update stat visual
 		mvwprintw(stats,1,2,"%.3fs",seconds(timer));
 		mvwprintw(stats,2,2,"%d/%d",linescleared,goal);
+		// debug switch
+		if(DEBUG) {
+			// update data well visual
+			for(i=1;i<HEIGHT;i++)
+				for(j=0;j<WIDTH;j++)
+					mvprintw(i+8,j,"%d",board[i][j]);
+			mvprintw(1,0,"holdstatus:%d",holdstatus);
+			mvprintw(2,0,"holdcolor:%d",hold.color);
+			mvprintw(3,0,"livecolor:%d",live.color);
+		}
 		// reload sections
 		wrefresh(well);
 		wrefresh(stats);
@@ -229,9 +254,6 @@ void sprint(int goal) {
 		// check goal reached
 		if(linescleared >= goal)
 			break;
-		mvprintw(1,0,"holdstatus:%d",holdstatus);
-		mvprintw(2,0,"holdcolor:%d",hold.color);
-		mvprintw(3,0,"livecolor:%d",live.color);
 	}
 	if(!gameover)
 		mvwprintw(message,1,2,"nice");
@@ -260,7 +282,10 @@ void wdrawblock(WINDOW *win, int row, int col) {
 				if(live.data[live.pivot.row+r][live.pivot.col+c] == 1) {
 					wattron(win,COLOR_PAIR(current));
 					if(row == live.pos.row && col == live.pos.col)
-						mvwprintw(win,scry,scrx,"[]");
+						if(DEBUG)
+							mvwprintw(win,scry,scrx,"[]");
+						else
+							mvwprintw(win,scry,scrx,"  ");
 					else
 						mvwprintw(win,scry,scrx,"  ");
 					wattroff(win,COLOR_PAIR(current));
@@ -275,6 +300,9 @@ void wdrawblock(WINDOW *win, int row, int col) {
 			}
 		}
 	}
+}
+
+void wcountdown(WINDOW *win, int countdown) {
 }
 
 // given a clock_t, convert it to a double

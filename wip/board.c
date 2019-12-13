@@ -89,37 +89,17 @@ void popnext() {
 // equal to live and generate a new live block. otherwise swap
 // the hold block and live block.
 void holdlive() {
+	int ofs = 3;
 	if(holdstatus == 0) {
 		holdstatus = 1;
-		hold.mode = live.mode;
-		hold.state = 0;
-		hold.size = live.size;
-		hold.pivot = live.pivot;
-		hold.pos = spawn;
-		hold.color = live.color;
-		memcpy(hold.data,pool[live.color].data,sizeof(int)*MAX*MAX);
+		memcpy(&hold,&pool[live.color-ofs],sizeof(tetromino));
 		popnext();
 	} else {
 		// says to just set them equal to eachother
 		removeblock(&live);
-		int hm = hold.mode;
-		rowcol hz = hold.size;
-		rowcol hv = hold.pivot;
-		int hc = hold.color;
-		hold.mode = live.mode;
-		hold.state = 0;
-		hold.size = live.size;
-		hold.pivot = live.pivot;
-		hold.pos = spawn;
-		hold.color = live.color;
-		memcpy(hold.data,pool[hold.color].data,sizeof(int)*MAX*MAX);
-		live.mode = hm;
-		live.state = 0;
-		live.size = hz;
-		live.pivot = hv;
-		live.pos = spawn;
-		live.color = hc;
-		memcpy(live.data,pool[live.color].data,sizeof(int)*MAX*MAX);
+		int ohc = hold.color;
+		memcpy(&hold,&pool[live.color-ofs],sizeof(tetromino));
+		memcpy(&live,&pool[ohc-ofs],sizeof(tetromino));
 		shiftlive(0,0);
 	}
 }

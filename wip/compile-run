@@ -1,0 +1,4 @@
+clear;
+rm bytris;
+gcc -o bytris cursemain.c -l ncurses;
+./bytris

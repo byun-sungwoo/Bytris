@@ -43,6 +43,7 @@ void wdrawhold(WINDOW*,int,int);
 void sprint(int);
 double seconds(clock_t);
 
+// main
 int main(void) {
 	// init ncurses
 	initscr();	// create stdscr
@@ -184,23 +185,23 @@ void sprint(int goal) {
 		for(i=0;i<HEIGHT;i++)
 			for(j=0;j<WIDTH;j++)
 				wdrawblock(well,i,j);
-		// data well visual
+		// update data well visual
 		for(i=1;i<HEIGHT;i++)
 			for(j=0;j<WIDTH;j++)
-				mvprintw(i+9,j,"%d",board[i][j]);
-		// update stat visual
-		mvwprintw(stats,1,2,"%.3fs",seconds(timer));
-		mvwprintw(stats,2,2,"%d/%d",linescleared,goal);
+				mvprintw(i+8,j,"%d",board[i][j]);
 		// update hold visual
-		for(i=0;i<hold.size.row;i++)
-			for(j=0;j<hold.size.col;j++) {
-				if(hold.data[i][j] == 1) {
-					wattron(whold,COLOR_PAIR(hold.color));
-					mvwprintw(whold,i+1,1+j*2,"  ");
-					wattroff(whold,COLOR_PAIR(hold.color));
-				} else
-					mvwprintw(whold,i+1,1+j*2,"  ");
+		if(holdstatus == 1) {
+			for(i=0;i<hold.size.row;i++) {
+				for(j=0;j<hold.size.col;j++) {
+					if(hold.data[i][j] == 1) {
+						wattron(whold,COLOR_PAIR(hold.color));
+						mvwprintw(whold,i+1,1+j*2,"  ");
+						wattroff(whold,COLOR_PAIR(hold.color));
+					} else
+						mvwprintw(whold,i+1,1+j*2,"  ");
+				}
 			}
+		}
 		// update queue visual
 		for(k=0;k<5;k++) {
 			tetromino t = next[k];
@@ -215,6 +216,9 @@ void sprint(int goal) {
 				}
 			}
 		}
+		// update stat visual
+		mvwprintw(stats,1,2,"%.3fs",seconds(timer));
+		mvwprintw(stats,2,2,"%d/%d",linescleared,goal);
 		// reload sections
 		wrefresh(well);
 		wrefresh(stats);
@@ -238,6 +242,8 @@ void sprint(int goal) {
 	getch();
 }
 
+// draw the element at board[row][col] with
+// respect to the given window
 void wdrawblock(WINDOW *win, int row, int col) {
 	if(row >= 1 && row < HEIGHT && col >= 0 && col < WIDTH) {
 		int current = board[row][col];
@@ -271,6 +277,8 @@ void wdrawblock(WINDOW *win, int row, int col) {
 	}
 }
 
+// given a clock_t, convert it to a double
+// which is the clock_t in seconds
 double seconds(clock_t clock) {
 	return (double)(clock)/1000000;
 }

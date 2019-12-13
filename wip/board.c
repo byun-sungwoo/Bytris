@@ -7,12 +7,12 @@
 #include <time.h>
 #include "board.h"
 
-int gameover = 0;		// if 1, game over
-int board[HEIGHT][WIDTH];	// represent the game board
 tetromino live;			// curent block
 tetromino ghost;		// ghost block
 tetromino next[BAGSIZE];	// next BAGSIZE blocks, display only 5
 tetromino hold;			// hold block
+int gameover = 0;		// if 1, game over
+int board[HEIGHT][WIDTH];	// represent the game board
 int holdstatus = 0;
 int bag[BAGSIZE];
 int bagstatus = 0;
@@ -100,6 +100,7 @@ void holdlive() {
 		memcpy(hold.data,pool[live.color].data,sizeof(int)*MAX*MAX);
 		popnext();
 	} else {
+		// says to just set them equal to eachother
 		removeblock(&live);
 		int hm = hold.mode;
 		rowcol hz = hold.size;

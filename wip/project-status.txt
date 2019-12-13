@@ -1,0 +1,21 @@
+2019-12-07
+Bytris - byun-sungwoo
+
+[Implemented]
+Gamemode		: Sprint
+Rotation System		: SRS
+Block Generation	: Unique rotation, 7 bag following Tetris 99
+Board Dimension		: 21 rows 10 col, game displays bottom 20
+Ghost Block		: Added
+Lock Delay		: Fixed time from spawn
+Next Pieces		: Added
+Reset Game		: Added
+Hold Block		: Added
+
+[TODO]
+180 rotation		: Add 180 rotation key
+Game menu		: Maybe
+Spring Leaderboard	: Need to read/write txt file
+Stats Update		: Add more stats to stats window
+Gamemode		: Marathon & Battle
+Input			: Add DAS/ARR

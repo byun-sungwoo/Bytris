@@ -25,24 +25,6 @@
 #define ROTATELEFT	'z'
 #define RESET		'a'
 
-// Implemented:
-// Gamemode		: Sprint
-// Rotation System	: SRS
-// Block Generation	: Unique rotation, 7 bag following Tetris 99
-// Board Dimension	: 21 rows 10 col, game displays bottom 20
-// Ghost Block		: Added
-// Lock Delay		: Fixed time from spawn
-// Next Pieces		: Added
-// Reset Game		: Added
-// Hold Block		: Added
-// 
-// TODO:
-// Game menu		: Maybe
-// Spring Leaderboard	: Need to read/write txt file
-// Stats Update		: Add more stats to stats window
-// Gamemode		: Marathon & Battle
-// Input		: Add DAS/ARR
-
 int dimr,dimc;
 void wdrawblock(WINDOW*,int,int);
 void wdrawhold(WINDOW*,int,int);
@@ -106,7 +88,7 @@ void sprint(int goal) {
 	int tickcounter;
 	int oldboard[HEIGHT][WIDTH];
 	int canhold;
-	// start up tetris
+	// start up game
 	NEWGAME:
 	liveoffset = 0;
 	inputoffset = 0;
@@ -127,8 +109,6 @@ void sprint(int goal) {
 	refresh();
 	seed = time(NULL);
 	initgame(seed);
-	//holdstatus = 1;
-	//hold = pool[3];
 	if(DEBUG)
 		mvprintw(0,0,"seed:%d",seed);
 	// draw game screen
@@ -141,6 +121,7 @@ void sprint(int goal) {
 	wrefresh(wnext);
 	wrefresh(message);
 	memcpy(oldboard,board,sizeof(int)*HEIGHT*WIDTH);
+	// game loop
 	while(!gameover) {
 		// update timers
 		timer = clock()-resetoffset;

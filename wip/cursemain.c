@@ -11,7 +11,7 @@
 #include "board.c"
 
 // game settings
-#define DEBUG		0	// 0 for non debug mode
+#define DEBUG		1	// 0 for non debug mode
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.8	// downtick rate (seconds)
 

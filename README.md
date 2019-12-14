@@ -1,6 +1,6 @@
 # Bytris
 
-My implementation of modern tetris using ncurses in C.
+Implementation of modern tetris using ncurses in C.
 
 Game Features:
 - modified SRS rotation

@@ -11,7 +11,8 @@
 #include "board.c"
 
 // game settings
-#define DEBUG		1	// 0 for non debug mode
+#define DEBUG		0	// 0 for non debug mode
+#define BOXLINES	0	// 1 for on, 0 for off
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.8	// downtick rate (seconds)
 
@@ -27,6 +28,7 @@
 
 int dimr,dimc;
 void wdrawblock(WINDOW*,int,int);
+void wcountdown(WINDOW*,int);
 void wdrawhold(WINDOW*,int,int);
 void sprint(int);
 double seconds(clock_t);
@@ -90,6 +92,7 @@ void sprint(int goal) {
 	resetoffset = 0;
 	// start up game
 	NEWGAME:
+	holdstatus = 0;
 	liveoffset = 0;
 	inputoffset = 0;
 	lockdelaycounter = 0;
@@ -101,11 +104,13 @@ void sprint(int goal) {
 	wclear(whold);
 	wclear(wnext);
 	wclear(message);
-	box(well,0,0);
-	box(stats,0,0);
-	box(whold,0,0);
-	box(wnext,0,0);
-	box(message,0,0);
+	if(BOXLINES) {
+		box(well,0,0);
+		box(stats,0,0);
+		box(whold,0,0);
+		box(wnext,0,0);
+		box(message,0,0);
+	}
 	refresh();
 	seed = time(NULL);
 	initgame(seed);
@@ -121,6 +126,7 @@ void sprint(int goal) {
 	wrefresh(wnext);
 	wrefresh(message);
 	memcpy(oldboard,board,sizeof(int)*HEIGHT*WIDTH);
+	wcountdown(message,3);
 	// game loop
 	while(!gameover) {
 		// update timers
@@ -286,6 +292,18 @@ void wdrawblock(WINDOW *win, int row, int col) {
 
 // display a countdown in the given window
 void wcountdown(WINDOW *win, int countdown) {
+	while(countdown >= 0) {
+		if(countdown == 0)
+			mvwprintw(win,1,1,"start");
+		else
+			mvwprintw(win,1,1,"%d",countdown);
+		wrefresh(win);
+		countdown--;
+		sleep(1);
+	}
+	mvwprintw(win,1,1,"     ");
+	wrefresh(win);
+	flushinp();	// disregard all input while looping
 }
 
 // write the given amount of seconds

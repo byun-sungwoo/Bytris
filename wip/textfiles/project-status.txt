@@ -14,6 +14,7 @@ Reset Game		: Added
 Hold Block		: Added
 
 [TODO]
+Ghost Color		: Match to current live
 Board Dimension		: I think it's actually 22 x 10
 			  Blocks seem to spawn 1 above first row
 			  but change 1 higher when there is no room.

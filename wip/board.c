@@ -129,6 +129,55 @@ void displaygame() {
 		live.pos.col);
 }
 
+int rotate180() {
+	removeblock(&live);
+	rotate(&live,0);
+	rotate(&live,0);
+	int state = live.state;
+	int i;
+	if(validblock(&live,live.pos.row,live.pos.col)) {	// test 1
+		shiftlive(0,0);
+		return 1;
+	}
+	if(live.mode == 0) {			// standard
+		int lstr[4] = {0,1,-2,-2};
+		int lstc[4] = {1,1,0,1};
+		int sc = state == 0 || state == 3 ? 1 : -1;
+		int sr = state == 1 || state == 3 ? 1 : -1;
+		for(i=0;i<4;i++) {		// tests 2-5
+			int tmpr = -lstr[i]*sr;
+			int tmpc = lstc[i]*sc;
+			if(validblock(&live,live.pos.row+tmpr,live.pos.col+tmpc)) {
+				shiftlive(tmpr,tmpc);
+				return 1;
+			}
+		}
+	} else {				// offset
+		int lstr[4] = {0,0,2,-1};
+		int lstc[4] = {-1,2,-1,2};
+		int swp = state == 0 || state == 2 ? 1 : 0;
+		int nr = state == 0 || state == 1 ? 1 : 0;
+		int sc = state == 0 || state == 2 ? 1 : 0;
+		int nc = state == 0 || state == 1 ? 1 : 0;
+		for(i=0;i<4;i++) {		// tests 2-5
+			int tmpr = -lstr[i];
+			int tmpc = lstc[i];
+			if(swp && tmpr != 0) tmpr = tmpc;
+			if(nr) tmpr *= -1;
+			if(sc) tmpc--;
+			if(nc) tmpc *= -1;
+			if(validblock(&live,live.pos.row+tmpr,live.pos.col+tmpc)) {
+				shiftlive(tmpr,tmpc);
+				return 1;
+			}
+		}
+	}
+	rotate(&live,0);
+	rotate(&live,0);
+	placeblock(&live);
+	return 0;
+}
+
 // if right = 1, rotate right
 int rotatelive(int right) {
 	int n = right ? rotaterightlive() : rotateleftlive();

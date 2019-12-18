@@ -12,6 +12,7 @@ void initnext();
 void popnext();
 void holdlive();
 void displaygame();
+int rotate180();
 int rotatelive(int);
 int rotateleftlive();
 int rotaterightlive();

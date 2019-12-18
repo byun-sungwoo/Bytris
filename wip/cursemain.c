@@ -10,7 +10,7 @@
 #include "board.c"
 
 // game settings
-#define DEBUG		0	// 1 for debug mode
+#define DEBUG		1	// 1 for debug mode
 #define BOXLINES	1	// 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.7	// downtick rate (seconds)
@@ -24,6 +24,7 @@
 #define MOVELEFT	68	// arrow left
 #define HOLD		'c'
 #define ROTATELEFT	'z'
+#define ROTATETWICE	'x'
 #define RESET		'a'
 
 int dimr,dimc;
@@ -89,7 +90,6 @@ void sprint(int goal) {
 				(dimc/2)-(WIDTH+2));
 	// tetris variables
 	int seed,i,j,k;
-	int lockdelaycap = LOCKDELAY;
 	int lockdelaycounter;
 	int tickcounter;
 	int oldboard[HEIGHT][WIDTH];
@@ -153,7 +153,8 @@ void sprint(int goal) {
 					inputoffset = clock()-resetoffset;
 			if(	input == HARDDROP || input  == HOLD ||
 				input == MOVELEFT || input == MOVERIGHT ||
-				input == ROTATELEFT || input == ROTATERIGHT) {
+				input == ROTATELEFT || input == ROTATERIGHT ||
+				input == ROTATETWICE) {
 				inputoffset = clock()-resetoffset;
 				if(input == HARDDROP) {
 					harddroplive();
@@ -171,6 +172,7 @@ void sprint(int goal) {
 				if(input == MOVERIGHT) shiftlive(0,1);
 				if(input == ROTATELEFT) rotatelive(0);
 				if(input == ROTATERIGHT) rotatelive(1);
+				if(input == ROTATETWICE) rotate180();
 			}
 			if(input == RESET) {
 				resetoffset = clock();
@@ -188,7 +190,7 @@ void sprint(int goal) {
 				}
 				lockdelaycounter += atfloor ? 1 : -lockdelaycounter;
 				if(	(atfloor && seconds(timer-inputoffset)>TICKRATE) ||
-					(atfloor && lockdelaycounter >= lockdelaycap)) {
+					(atfloor && lockdelaycounter >= LOCKDELAY)) {
 					harddroplive();
 					canhold = 1;
 					tickcounter = 0;
@@ -201,31 +203,26 @@ void sprint(int goal) {
 			for(j=0;j<WIDTH;j++)
 				wdrawblock(well,i,j);
 		// update hold visual
-		if(holdstatus == 1) {
-			for(i=0;i<MAX-1;i++) {
-				for(j=0;j<MAX;j++) {
+		if(holdstatus == 1)
+			for(i=0;i<MAX-1;i++)
+				for(j=0;j<MAX;j++)
 					if(hold.data[i][j] == 1 && i < hold.size.row && j < hold.size.col) {
 						wattron(whold,COLOR_PAIR(hold.color));
 						mvwprintw(whold,i+2,3+j*2,"  ");
 						wattroff(whold,COLOR_PAIR(hold.color));
 					} else
 						mvwprintw(whold,i+2,3+j*2,"  ");
-				}
-			}
-		}
 		// update queue visual
 		for(k=0;k<5;k++) {
 			tetromino t = next[k];
-			for(i=0;i<MAX-1;i++) {
-				for(j=0;j<MAX;j++) {
+			for(i=0;i<MAX-1;i++)
+				for(j=0;j<MAX;j++)
 					if(t.data[i][j] == 1 && i < t.size.row && j < t.size.col) {
 						wattron(wnext,COLOR_PAIR(t.color));
 						mvwprintw(wnext,i+2+(3*k),3+j*2,"  ");
 						wattroff(wnext,COLOR_PAIR(t.color));
 					} else
 						mvwprintw(wnext,i+2+(3*k),3+j*2,"  ");
-				}
-			}
 		}
 		// update stat visual
 		mvwprintw(stats,1,2,"%.3fs",seconds(timer));

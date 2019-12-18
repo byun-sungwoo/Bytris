@@ -3,7 +3,6 @@ Bytris - byun-sungwoo
 [Implemented]
 Gamemode		: Sprint
 Rotation System		: SRS
-			  I think, I block rotation is wrong
 Block Generation	: Unique rotation, 7 bag following Tetris 99
 Board Dimension		: 21 rows 10 col, game displays bottom 20
 Ghost Block		: Added
@@ -12,13 +11,14 @@ Next Pieces		: Added
 Reset Game		: Added
 Hold Block		: Added
 Ghost Color		: Color matching live
+180 rotation		: 180 rotation/kicks added
 
 [TODO]
+i-block rotation	: think the i block is rotating wrong?
 Multiple Input Detection: https://gamedev.stackexchange.com/questions/144558/key-released-multiple-keys-how-to-go-around-ncurses-limitations
 Board Dimension		: I think it's actually 22 x 10
 			  Blocks seem to spawn 1 above first row
 			  but change 1 higher when there is no room.
-180 rotation		: Add 180 rotation key
 Game menu		: Maybe
 Spring Leaderboard	: Need to read/write txt file
 Stats Update		: Add more stats to stats window

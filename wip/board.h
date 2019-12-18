@@ -1,4 +1,3 @@
-// 2019-12-07
 // Bytris - byun-sungwoo
 
 #include "tetromino.c"

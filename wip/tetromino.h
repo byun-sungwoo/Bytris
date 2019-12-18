@@ -1,4 +1,3 @@
-// 2019-12-07
 // Bytris - byun-sungwoo
 
 #define MAX 4

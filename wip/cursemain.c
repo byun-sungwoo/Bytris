@@ -13,7 +13,8 @@
 #define DEBUG		0	// 1 for debug mode
 #define BOXLINES	1	// 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
-#define TICKRATE	0.8	// downtick rate (seconds)
+#define TICKRATE	0.7	// downtick rate (seconds)
+#define LOCKDELAY	4	// lock delay (ticks)
 
 // keyboard settings
 #define HARDDROP	32	// spacebar
@@ -44,12 +45,19 @@ int main(void) {
 	// color init
 	start_color();
 	init_pair(3,COLOR_BLACK,COLOR_GREEN);
+	init_pair(13,COLOR_GREEN,COLOR_BLACK);
 	init_pair(4,COLOR_BLACK,COLOR_RED);
+	init_pair(14,COLOR_RED,COLOR_BLACK);
 	init_pair(5,COLOR_BLACK,COLOR_WHITE);
+	init_pair(15,COLOR_WHITE,COLOR_BLACK);
 	init_pair(6,COLOR_BLACK,COLOR_BLUE);
+	init_pair(16,COLOR_BLUE,COLOR_BLACK);
 	init_pair(7,COLOR_BLACK,COLOR_MAGENTA);
+	init_pair(17,COLOR_MAGENTA,COLOR_BLACK);
 	init_pair(8,COLOR_BLACK,COLOR_CYAN);
+	init_pair(18,COLOR_CYAN,COLOR_BLACK);
 	init_pair(9,COLOR_BLACK,COLOR_YELLOW);
+	init_pair(19,COLOR_YELLOW,COLOR_BLACK);
 	// gamemode sprint
 	sprint(40);
 	// end ncurses
@@ -81,7 +89,7 @@ void sprint(int goal) {
 				(dimc/2)-(WIDTH+2));
 	// tetris variables
 	int seed,i,j,k;
-	int lockdelaycap = 5;
+	int lockdelaycap = LOCKDELAY;
 	int lockdelaycounter;
 	int tickcounter;
 	int oldboard[HEIGHT][WIDTH];
@@ -277,8 +285,11 @@ void wdrawblock(WINDOW *win, int row, int col) {
 					else
 						mvwprintw(win,scry,scrx,"  ");
 					wattroff(win,COLOR_PAIR(current));
-				} else
+				} else {
+					wattron(win,COLOR_PAIR(current+10));
 					mvwprintw(win,scry,scrx,"//");
+					wattroff(win,COLOR_PAIR(current+10));
+				}
 			}
 			else {
 				wattron(win,COLOR_PAIR(current));

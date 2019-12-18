@@ -24,7 +24,7 @@
 #define MOVELEFT	68	// arrow left
 #define HOLD		'c'
 #define ROTATELEFT	'z'
-#define ROTATETWICE	'x'
+#define ROTATE180	'x'
 #define RESET		'a'
 
 int dimr,dimc;
@@ -154,7 +154,7 @@ void sprint(int goal) {
 			if(	input == HARDDROP || input  == HOLD ||
 				input == MOVELEFT || input == MOVERIGHT ||
 				input == ROTATELEFT || input == ROTATERIGHT ||
-				input == ROTATETWICE) {
+				input == ROTATE180) {
 				inputoffset = clock()-resetoffset;
 				if(input == HARDDROP) {
 					harddroplive();
@@ -172,7 +172,7 @@ void sprint(int goal) {
 				if(input == MOVERIGHT) shiftlive(0,1);
 				if(input == ROTATELEFT) rotatelive(0);
 				if(input == ROTATERIGHT) rotatelive(1);
-				if(input == ROTATETWICE) rotate180();
+				if(input == ROTATE180) rotate180();
 			}
 			if(input == RESET) {
 				resetoffset = clock();

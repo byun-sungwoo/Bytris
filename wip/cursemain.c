@@ -10,7 +10,7 @@
 #include "board.c"
 
 // game settings
-#define DEBUG		1	// 1 for debug mode
+#define DEBUG		0	// 1 for debug mode
 #define BOXLINES	1	// 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.7	// downtick rate (seconds)
@@ -321,5 +321,5 @@ void wtime(WINDOW *win, int y, int x, double sec) {
 // given a clock_t, convert it to a double
 // which is the clock_t in seconds
 double seconds(clock_t clock) {
-	return (double)(clock)/1000000;
+	return ((double)(clock)/1000000)*1.75;
 }

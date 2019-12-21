@@ -12,7 +12,8 @@ Reset Game		: Added
 Hold Block		: Added
 Ghost Color		: Color matching live
 180 rotation		: 180 rotation/kicks added
-fix timer		: FIXED NICE
+Timer			: Timer pull current time irl
+Sonic Drop		: Added
 
 [TODO]
 Board Dimension		: I think it's actually 22 x 10

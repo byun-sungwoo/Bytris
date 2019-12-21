@@ -372,12 +372,17 @@ int harddropshiftlive() {
 // hard drop, basically what spacebar does in tetris.
 // returns number of lines cleared
 int harddroplive() {
-	int i;
 	int lines = 0;
 	shiftlive(harddropshiftlive(),0);
 	lines = locklive();
 	linescleared += lines;
 	return lines;
+}
+
+// somewhat mimics the sonic drop function
+// by moving the live block to the lowest it can go
+int sonicdroplive() {
+	return shiftlive(harddropshiftlive(),0);
 }
 
 // live piece will get updated.

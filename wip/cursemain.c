@@ -27,6 +27,7 @@
 #define ROTATELEFT	'z'
 #define ROTATE180	'x'
 #define RESET		'a'
+#define SONICDROP	'v'
 
 int dimr,dimc;
 void wdrawblock(WINDOW*,int,int);
@@ -156,7 +157,7 @@ void sprint(int goal) {
 			if(	input == HARDDROP	|| input == HOLD	||
 				input == MOVELEFT	|| input == MOVERIGHT	||
 				input == ROTATELEFT	|| input == ROTATERIGHT	||
-				input == ROTATE180) {
+				input == ROTATE180	|| input == SONICDROP) {
 				inputoffset = getmicro()-resetoffset;
 				if(input == HARDDROP) {
 					harddroplive();
@@ -175,6 +176,7 @@ void sprint(int goal) {
 				if(input == ROTATELEFT)		rotatelive(0);
 				if(input == ROTATERIGHT)	rotatelive(1);
 				if(input == ROTATE180)		rotate180();
+				if(input == SONICDROP)		sonicdroplive();
 			}
 			if(input == RESET)
 				goto NEWGAME;

@@ -11,11 +11,11 @@
 #include <sys/time.h>
 
 // game settings
-#define DEBUG		0	// 1 for debug mode
+#define DEBUG		1	// 1 for debug mode
 #define BOXLINES	1	// 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
-#define TICKRATE	0.7	// downtick rate (seconds)
-#define LOCKDELAY	4	// lock delay (ticks)
+#define TICKRATE	0.8	// downtick rate (seconds)
+#define LOCKDELAY	5	// lock delay (ticks)
 
 // keyboard settings
 #define HARDDROP	32	// spacebar
@@ -153,9 +153,9 @@ void sprint(int goal) {
 			if(input == SOFTDROP)
 				if(shiftlive(1,0) == 1)
 					inputoffset = getmicro()-resetoffset;
-			if(	input == HARDDROP	|| input == HOLD ||
-				input == MOVELEFT	|| input == MOVERIGHT ||
-				input == ROTATELEFT	|| input == ROTATERIGHT ||
+			if(	input == HARDDROP	|| input == HOLD	||
+				input == MOVELEFT	|| input == MOVERIGHT	||
+				input == ROTATELEFT	|| input == ROTATERIGHT	||
 				input == ROTATE180) {
 				inputoffset = getmicro()-resetoffset;
 				if(input == HARDDROP) {
@@ -170,11 +170,11 @@ void sprint(int goal) {
 					tickcounter = 0;
 					liveoffset = getmicro()-resetoffset;
 				}
-				if(input == MOVELEFT) shiftlive(0,-1);
-				if(input == MOVERIGHT) shiftlive(0,1);
-				if(input == ROTATELEFT) rotatelive(0);
-				if(input == ROTATERIGHT) rotatelive(1);
-				if(input == ROTATE180) rotate180();
+				if(input == MOVELEFT)		shiftlive(0,-1);
+				if(input == MOVERIGHT)		shiftlive(0,1);
+				if(input == ROTATELEFT)		rotatelive(0);
+				if(input == ROTATERIGHT)	rotatelive(1);
+				if(input == ROTATE180)		rotate180();
 			}
 			if(input == RESET)
 				goto NEWGAME;
@@ -316,15 +316,17 @@ void wcountdown(WINDOW *win, int countdown) {
 // write the given amount of seconds
 // in hr/min/s form in the window
 void wtime(WINDOW *win, int y, int x, double sec) {
+	// TODO
 }
 
 // given a clock_t, convert it to a double
 // which is the clock_t in seconds
+// basically micro sec to sec
 double seconds(clock_t clock) {
 	return ((double)(clock)/1000000);
 }
 
-// return the current time in ms
+// return the current time in micro sec
 long getmicro(){
 	struct timeval tv;
 	gettimeofday(&tv,NULL);

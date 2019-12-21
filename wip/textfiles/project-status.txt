@@ -12,9 +12,11 @@ Reset Game		: Added
 Hold Block		: Added
 Ghost Color		: Color matching live
 180 rotation		: 180 rotation/kicks added
+fix timer		: FIXED NICE
 
 [TODO]
 i-block rotation	: think the i block is rotating wrong?
+			  maybe im retarded but I thought I followed the steps, write it out again i guess.
 Multiple Input Detection: https://gamedev.stackexchange.com/questions/144558/key-released-multiple-keys-how-to-go-around-ncurses-limitations
 Board Dimension		: I think it's actually 22 x 10
 			  Blocks seem to spawn 1 above first row

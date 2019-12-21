@@ -8,7 +8,6 @@
 #include <time.h>
 #include <string.h>
 #include "board.c"
-#include <sys/time.h>
 
 // game settings
 #define DEBUG		0	// 1 for debug mode
@@ -34,7 +33,6 @@ void wcountdown(WINDOW*,int);
 void wdrawhold(WINDOW*,int,int);
 void sprint(int);
 double seconds(clock_t);
-long getmicro();
 
 // main
 int main(void) {
@@ -70,7 +68,12 @@ int main(void) {
 	endwin();
 	return 0;
 }
-
+/*int main() {
+	time_t rawtime;
+	time ( &rawtime );
+	printf("%ld\n",rawtime);
+	return 0;
+}*/
 // sprint gamemode
 void sprint(int goal) {
 	nodelay(stdscr,TRUE);
@@ -98,6 +101,7 @@ void sprint(int goal) {
 	int canhold;
 	char input;
 	clock_t timer,resetoffset,liveoffset,inputoffset;
+	resetoffset = 0;
 	// start up game
 	NEWGAME:
 	holdstatus = 0;
@@ -135,40 +139,39 @@ void sprint(int goal) {
 	wrefresh(message);
 	memcpy(oldboard,board,sizeof(int)*HEIGHT*WIDTH);
 	wcountdown(message,3);
-	resetoffset = getmicro();
 	// game loop
 	while(!gameover) {
 		// update timers
-		timer = getmicro()-resetoffset;
+		timer = clock()-resetoffset;
 		if(seconds(timer-liveoffset) > AUTODROP) {
 			// autodrop case
 			harddroplive();
 			canhold = 1;
 			tickcounter = 0;
-			liveoffset = getmicro()-resetoffset;
-			inputoffset = getmicro()-resetoffset;
+			liveoffset = clock()-resetoffset;
+			inputoffset = clock()-resetoffset;
 		} else {
 			// user input
 			input = getch();
 			if(input == SOFTDROP)
 				if(shiftlive(1,0) == 1)
-					inputoffset = getmicro()-resetoffset;
-			if(	input == HARDDROP	|| input == HOLD ||
-				input == MOVELEFT	|| input == MOVERIGHT ||
-				input == ROTATELEFT	|| input == ROTATERIGHT ||
+					inputoffset = clock()-resetoffset;
+			if(	input == HARDDROP || input  == HOLD ||
+				input == MOVELEFT || input == MOVERIGHT ||
+				input == ROTATELEFT || input == ROTATERIGHT ||
 				input == ROTATE180) {
-				inputoffset = getmicro()-resetoffset;
+				inputoffset = clock()-resetoffset;
 				if(input == HARDDROP) {
 					harddroplive();
 					canhold = 1;
 					tickcounter = 0;
-					liveoffset = getmicro()-resetoffset;
+					liveoffset = clock()-resetoffset;
 				}
 				if(input == HOLD && canhold) {
 					holdlive();
 					canhold = 0;
 					tickcounter = 0;
-					liveoffset = getmicro()-resetoffset;
+					liveoffset = clock()-resetoffset;
 				}
 				if(input == MOVELEFT) shiftlive(0,-1);
 				if(input == MOVERIGHT) shiftlive(0,1);
@@ -176,8 +179,10 @@ void sprint(int goal) {
 				if(input == ROTATERIGHT) rotatelive(1);
 				if(input == ROTATE180) rotate180();
 			}
-			if(input == RESET)
+			if(input == RESET) {
+				resetoffset = clock();
 				goto NEWGAME;
+			}
 			// downtick
 			if(DEBUG)
 				mvprintw(5,0,"%f > %f", seconds(timer-liveoffset), TICKRATE*(tickcounter+1));
@@ -194,7 +199,7 @@ void sprint(int goal) {
 					harddroplive();
 					canhold = 1;
 					tickcounter = 0;
-					liveoffset = getmicro()-resetoffset;
+					liveoffset = clock()-resetoffset;
 				}
 			}
 		}
@@ -322,11 +327,4 @@ void wtime(WINDOW *win, int y, int x, double sec) {
 // which is the clock_t in seconds
 double seconds(clock_t clock) {
 	return ((double)(clock)/1000000);
-}
-
-// return the current time in ms
-long getmicro(){
-	struct timeval tv;
-	gettimeofday(&tv,NULL);
-	return (int)tv.tv_sec*1e6+(int)tv.tv_usec*1e-0;
 }

@@ -26,7 +26,7 @@ Available Controls
 - rotate clockwise
 - rotate counterclockwise
 - rotate 180
-- softdrop
-- harddrop
-- sonicdrop
+- soft drop
+- hard drop
+- sonic drop
 - hold current piece

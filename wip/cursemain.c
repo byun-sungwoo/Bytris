@@ -11,23 +11,28 @@
 #include <sys/time.h>
 
 // game settings
-#define DEBUG		1	// 1 for debug mode
+#define DEBUG		0	// 1 for debug mode
 #define BOXLINES	1	// 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.8	// downtick rate (seconds)
 #define LOCKDELAY	5	// lock delay (ticks)
 
 // keyboard settings
-#define HARDDROP	32	// spacebar
-#define ROTATERIGHT	65	// arrow up
-#define SOFTDROP	66	// arrow down
-#define MOVERIGHT	67	// arrow right
-#define MOVELEFT	68	// arrow left
-#define HOLD		'c'
-#define ROTATELEFT	'z'
-#define ROTATE180	'x'
-#define RESET		'a'
+// spacebar-32
+// arrow keys {up-65, down-66, right-67, left-68}
+#define SOFTDROP	66
+#define HARDDROP	32
 #define SONICDROP	'v'
+
+#define ROTATELEFT	'z'
+#define ROTATERIGHT	65
+#define ROTATE180	'x'
+
+#define MOVELEFT	68
+#define MOVERIGHT	67
+
+#define HOLD		'c'
+#define RESET		'a'
 
 int dimr,dimc;
 void wdrawblock(WINDOW*,int,int);

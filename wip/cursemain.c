@@ -11,26 +11,26 @@
 #include <sys/time.h>
 
 // game settings
-#define DEBUG		0	// 1 for debug mode
-#define BOXLINES	1	// 1 for boxlines
+#define DEBUG		1	// [0,1] 1 for debug mode
+#define BOXLINES	1	// [0,1] 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.8	// downtick rate (seconds)
 #define LOCKDELAY	5	// lock delay (ticks)
 
+// {up-65, down-66, right-67, left-68, space-32}
 // keyboard settings
-// spacebar-32
-// arrow keys {up-65, down-66, right-67, left-68}
+// drops
 #define SOFTDROP	66
 #define HARDDROP	32
 #define SONICDROP	'v'
-
+// rotation
 #define ROTATELEFT	'z'
 #define ROTATERIGHT	65
 #define ROTATE180	'x'
-
+// movement
 #define MOVELEFT	68
 #define MOVERIGHT	67
-
+// other
 #define HOLD		'c'
 #define RESET		'a'
 
@@ -39,6 +39,7 @@ void wdrawblock(WINDOW*,int,int);
 void wcountdown(WINDOW*,int);
 void wdrawhold(WINDOW*,int,int);
 void sprint(int);
+void wtime(WINDOW*,int,int,double);
 double seconds(clock_t);
 long getmicro();
 
@@ -186,19 +187,20 @@ void sprint(int goal) {
 			if(input == RESET)
 				goto NEWGAME;
 			// downtick
-			if(DEBUG)
+			if(DEBUG) {
 				mvprintw(5,0,"%f > %f", seconds(timer-liveoffset), TICKRATE*(tickcounter+1));
+				mvprintw(6,0,"lockin:%d",lockdelaycounter);
+			}
 			if(seconds(timer-liveoffset) > TICKRATE*(tickcounter+1)) {
 				tickcounter++;
 				int atfloor = !shiftlive(1,0);
-				if(DEBUG) {
-					mvprintw(6,0,"floor? %d", atfloor);
-					mvprintw(7,0,"%f > %f",seconds(timer-inputoffset),TICKRATE);
-				}
+				if(DEBUG)
+					mvprintw(7,0,"floor? %d", atfloor);
 				lockdelaycounter += atfloor ? 1 : -lockdelaycounter;
 				if(	(atfloor && seconds(timer-inputoffset)>TICKRATE) ||
 					(atfloor && lockdelaycounter >= LOCKDELAY)) {
 					harddroplive();
+					lockdelaycounter = 0;
 					canhold = 1;
 					tickcounter = 0;
 					liveoffset = getmicro()-resetoffset;
@@ -232,7 +234,8 @@ void sprint(int goal) {
 						mvwprintw(wnext,i+2+(3*k),3+j*2,"  ");
 		}
 		// update stat visual
-		mvwprintw(stats,1,2,"%.3fs",seconds(timer));
+		//mvwprintw(stats,1,2,"%.3fs",seconds(timer));
+		wtime(stats,0,1,seconds(timer));
 		mvwprintw(stats,2,2,"%d/%d",linescleared,goal);
 		// debug visual
 		if(DEBUG) {
@@ -256,9 +259,9 @@ void sprint(int goal) {
 			break;
 	}
 	if(!gameover)
-		mvwprintw(message,1,2,"nice");
+		mvwprintw(message,1,2,":)");
 	else
-		mvwprintw(message,1,2,"b r u h");
+		mvwprintw(message,1,2,":(");
 	wrefresh(message);
 	nodelay(stdscr,FALSE);
 	getch();
@@ -281,11 +284,8 @@ void wdrawblock(WINDOW *win, int row, int col) {
 			if(board[row][col] == 1) {
 				if(live.data[live.pivot.row+r][live.pivot.col+c] == 1) {
 					wattron(win,COLOR_PAIR(current));
-					if(row == live.pos.row && col == live.pos.col)
-						if(DEBUG)
-							mvwprintw(win,scry,scrx,"[]");
-						else
-							mvwprintw(win,scry,scrx,"  ");
+					if(row == live.pos.row && col == live.pos.col && DEBUG)
+						mvwprintw(win,scry,scrx,"[]");
 					else
 						mvwprintw(win,scry,scrx,"  ");
 					wattroff(win,COLOR_PAIR(current));
@@ -323,12 +323,28 @@ void wcountdown(WINDOW *win, int countdown) {
 // write the given amount of seconds
 // in hr/min/s form in the window
 void wtime(WINDOW *win, int y, int x, double sec) {
-	// TODO
+	int min = 0;
+	if(sec >= 60) {
+		min = (int)(sec/60);
+		do
+			sec -= 60;
+		while(sec >= 60);
+	}
+	if(min < 10) {
+		mvwprintw(win,y+1,x+1,"0");
+		mvwprintw(win,y+1,x+2,"%d:",min);
+	} else
+		mvwprintw(win,y+1,x+1,"%d:",min);
+	if(sec < 10) {
+		mvwprintw(win,y+1,x+4,"0");
+		mvwprintw(win,y+1,x+5,"%.3f",sec);
+	} else
+		mvwprintw(win,y+1,x+4,"%.3f ",sec);
 }
 
 // given a clock_t, convert it to a double
 // which is the clock_t in seconds
-// basically micro sec to sec
+// basically microsec to sec
 double seconds(clock_t clock) {
 	return ((double)(clock)/1000000);
 }

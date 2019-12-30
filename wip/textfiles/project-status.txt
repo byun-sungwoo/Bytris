@@ -3,10 +3,9 @@ Bytris - byun-sungwoo
 [Implemented]
 Gamemode		: Sprint
 Rotation System		: SRS
-Block Generation	: Unique rotation, 7 bag following Tetris 99
+Block Generation	: Unique rotation, 7 bag
 Board Dimension		: 21 rows 10 col, game displays bottom 20
 Ghost Block		: Added
-Lock Delay		: Fixed time from spawn
 Next Pieces		: Added
 Reset Game		: Added
 Hold Block		: Added
@@ -14,16 +13,20 @@ Ghost Color		: Color matching live
 180 rotation		: 180 rotation/kicks added
 Timer			: Timer pull current time irl
 Sonic Drop		: Added
+Lock Delay		: The sonic drop created an interaction where it will lockin twice with 2 sonic drops.
+			  I think it's fixed for now I guess.
 
 [TODO]
 Board Dimension		: I think it's actually 22 x 10
 			  Blocks seem to spawn 1 above first row
 			  but change 1 higher when there is no room.
 i-block rotation	: think the i block is rotating wrong?
-			  I thought I followed the steps, write it out again i guess.
+			  I thought I followed the steps, write it out again I guess.
 Multiple Input Detection: https://gamedev.stackexchange.com/questions/144558/key-released-multiple-keys-how-to-go-around-ncurses-limitations
-Game menu		: Maybe
+Game menu		: Create menu on startup
+Screen Flicker		: Weird bug where the screen flashes for like 1 row. Not sure how to reproduce.
 Sprint Leaderboard	: Need to read/write txt file
+Customize Settings	: Let the user change the settings to what they want. So I guess store settings in a separate file.
 Stats Update		: Add more stats to stats window
 Gamemode		: Marathon & Battle
 Input			: Add DAS/ARR

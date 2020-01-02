@@ -11,7 +11,7 @@
 #include <sys/time.h>
 
 // game settings
-#define DEBUG		1	// [0,1] 1 for debug mode
+#define DEBUG		0	// [0,1] 1 for debug mode
 #define BOXLINES	1	// [0,1] 1 for boxlines
 #define AUTODROP	20	// autodrop cap (seconds)
 #define TICKRATE	0.8	// downtick rate (seconds)

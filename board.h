@@ -22,6 +22,8 @@ int clearlines(int,int);
 int harddropshiftlive();
 int harddroplive();
 int sonicdroplive();
+int sonicleftlive();
+int sonicrightlive();
 int locklive();
 int placeblock(tetromino*);
 int removeblock(tetromino*);

@@ -385,6 +385,26 @@ int sonicdroplive() {
 	return shiftlive(harddropshiftlive(),0);
 }
 
+// instant left movement
+int sonicleftlive() {
+	int i = live.pos.col;
+	int c=0;
+	while(validblock(&live,live.pos.row,i+c)) {
+		c--;
+	}
+	return shiftlive(0,c+1);
+}
+
+// instant left movement
+int sonicrightlive() {
+	int i = live.pos.col;
+	int c=0;
+	while(validblock(&live,live.pos.row,i+c)) {
+		c++;
+	}
+	return shiftlive(0,c-1);
+}
+
 // live piece will get updated.
 // calls popnext which will update pos.
 // returns number of lines cleared

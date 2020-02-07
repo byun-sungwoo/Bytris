@@ -20,16 +20,18 @@
 // {up-65, down-66, right-67, left-68, space-32}
 // keyboard settings
 // drops
-#define SOFTDROP	66
+#define SOFTDROP	'2'
 #define HARDDROP	32
 #define SONICDROP	'v'
 // rotation
 #define ROTATELEFT	'z'
-#define ROTATERIGHT	65
+#define ROTATERIGHT	'5'
 #define ROTATE180	'x'
 // movement
-#define MOVELEFT	68
-#define MOVERIGHT	67
+#define MOVELEFT	'1'
+#define MOVERIGHT	'3'
+#define SONICLEFT	'4'
+#define SONICRIGHT	'6'
 // other
 #define HOLD		'c'
 #define RESET		'a'
@@ -163,7 +165,8 @@ void sprint(int goal) {
 			if(	input == HARDDROP	|| input == HOLD	||
 				input == MOVELEFT	|| input == MOVERIGHT	||
 				input == ROTATELEFT	|| input == ROTATERIGHT	||
-				input == ROTATE180	|| input == SONICDROP) {
+				input == ROTATE180	|| input == SONICDROP	||
+				input == SONICLEFT	|| input == SONICRIGHT) {
 				inputoffset = getmicro()-resetoffset;
 				if(input == HARDDROP) {
 					harddroplive();
@@ -183,6 +186,8 @@ void sprint(int goal) {
 				if(input == ROTATERIGHT)	rotatelive(1);
 				if(input == ROTATE180)		rotate180();
 				if(input == SONICDROP)		sonicdroplive();
+				if(input == SONICLEFT)		sonicleftlive();
+				if(input == SONICRIGHT)		sonicrightlive();
 			}
 			if(input == RESET)
 				goto NEWGAME;

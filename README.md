@@ -12,6 +12,7 @@ Game Features:
 - 7 bag block generation
 - fixed lock delay
 - holding blocks
+- sonic drop, left, and right
 
 GUI Features:
 - well display
@@ -28,5 +29,8 @@ Available Controls
 - rotate 180
 - soft drop
 - hard drop
-- sonic drop
+- sonic movement
+	- sonic drop  : instant drop (no lock)
+	- sonic left  : goes as far left as possible
+	- sonic right : goes as far right as possible
 - hold current piece

@@ -20,16 +20,16 @@
 // {up-65, down-66, right-67, left-68, space-32}
 // keyboard settings
 // drops
-#define SOFTDROP	'2'
+#define SOFTDROP	66
 #define HARDDROP	32
 #define SONICDROP	'v'
 // rotation
 #define ROTATELEFT	'z'
-#define ROTATERIGHT	'5'
+#define ROTATERIGHT	65
 #define ROTATE180	'x'
 // movement
-#define MOVELEFT	'1'
-#define MOVERIGHT	'3'
+#define MOVELEFT	68
+#define MOVERIGHT	67
 #define SONICLEFT	'4'
 #define SONICRIGHT	'6'
 // other
@@ -264,12 +264,12 @@ void sprint(int goal) {
 			break;
 	}
 	if(!gameover)
-		mvwprintw(message,1,2,":)");
+		mvwprintw(message,1,2,":) | 'q' to exit");
 	else
-		mvwprintw(message,1,2,":(");
+		mvwprintw(message,1,2,":( | 'q' to exit");
 	wrefresh(message);
 	nodelay(stdscr,FALSE);
-	getch();
+	//getch();
 }
 
 // draw the element at board[row][col] with
